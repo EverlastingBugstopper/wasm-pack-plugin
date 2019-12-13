@@ -53,7 +53,7 @@ class WasmPackPlugin {
 
       return this._checkWasmPack()
         .then(() => {
-          runProcess("which", ["wasm-pack"], {}).then((res) => console.log(res))
+          runProcess("which", ["wasm-pack"], {})
           const shouldWatch = this.forceWatch || (this.forceWatch === undefined && compiler.watchMode);
 
           if (shouldWatch) {
@@ -109,6 +109,8 @@ class WasmPackPlugin {
 
       return Promise.resolve();
     } else {
+      console.log(`XDG_CONFIG_HOME: ${process.env["XDG_CONFIG_HOME"]}`)
+      console.log(`APPDATA: ${process.env["APPDATA"]}`)
       info('ℹ️  Installing wasm-pack \n');
 
       if (commandExistsSync("npm")) {
@@ -192,6 +194,14 @@ function spawnWasmPack({
 function runProcess(bin, args, options) {
   return new Promise((resolve, reject) => {
     const p = spawn(bin, args, options);
+
+    p.stdout.on('data', (data) => {
+      console.log(data.toString())
+    });
+
+    p.stderr.on('data', (data) => {
+      error(data.toString())
+    })
 
     p.on('close', code => {
       if (code === 0) {
