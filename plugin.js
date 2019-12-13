@@ -53,6 +53,7 @@ class WasmPackPlugin {
 
       return this._checkWasmPack()
         .then(() => {
+          runProcess("which", ["wasm-pack"], {}).then((res) => console.log(res))
           const shouldWatch = this.forceWatch || (this.forceWatch === undefined && compiler.watchMode);
 
           if (shouldWatch) {
