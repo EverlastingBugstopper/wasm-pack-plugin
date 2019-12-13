@@ -195,9 +195,8 @@ function runProcess(bin, args, options) {
     p.on('close', code => {
       if (code === 0) {
         resolve();
-
       } else {
-        reject(new Error("Rust compilation."));
+        reject(new Error(`Command: ${bin} ${args ? args.toString().replace(",", " ") : ""} ${options ? options : ""} exited with code ${code}`));
       }
     });
 
